@@ -498,7 +498,7 @@ class ShSequentialRenderer(object):
                 )
 
             # tv_text_length = len(self.terminal.text)
-            tv_text_length = len(unicode(tvo_texts))
+            tv_text_length = tvo_texts.length()
 
             # Second (re)render any modified trailing texts
             # When there are contents beyond the right bound, either on screen
