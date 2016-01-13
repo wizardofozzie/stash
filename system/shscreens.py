@@ -484,11 +484,15 @@ class ShSequentialRenderer(object):
 
         if IN_PYTHONISTA:
             # Batch the changes
-            self.terminal.tso.beginEditing()
+            # self.terminal.tso.beginEditing()
+
+            tvo_texts = NSMutableAttributedString.alloc().initWithAttributedString_(
+                self.terminal.tvo.attributedText()).autorelease()
 
             # First remove any leading texts that are rotated out
             if intact_left_bound > 0:
-                self.terminal.tso.replaceCharactersInRange_withString_(
+                # self.terminal.tso.replaceCharactersInRange_withString_(
+                tvo_texts.replaceCharactersInRange_withString_(
                     (0, intact_left_bound),
                     ''
                 )
@@ -500,22 +504,28 @@ class ShSequentialRenderer(object):
             # or on terminal, the contents need to be re-rendered.
             if intact_right_bound < max(tv_text_length, screen_buffer_length):
                 if len(renderable_chars) > 0:
-                    self.terminal.tso.replaceCharactersInRange_withAttributedString_(
+                    # self.terminal.tso.replaceCharactersInRange_withAttributedString_(
+                    tvo_texts.replaceCharactersInRange_withAttributedString_(
                         (intact_right_bound,
                          tv_text_length - intact_right_bound),
                         self._build_attributed_string(renderable_chars)
                     )
                 else:  # empty string, pure deletion
-                    self.terminal.tso.replaceCharactersInRange_withString_(
+                    # self.terminal.tso.replaceCharactersInRange_withString_(
+                    tvo_texts.replaceCharactersInRange_withString_(
                         (intact_right_bound,
                          tv_text_length - intact_right_bound),
                         ''
                     )
+
+            # Set the text
+            self.terminal.tvo.setAttributedText_(tvo_texts)
+
             # Set the cursor position
             self.terminal.selected_range = (cursor_x, cursor_x)
 
             # End of the batch of changes
-            self.terminal.tso.endEditing()
+            # self.terminal.tso.endEditing()
 
             # Ensure cursor line is visible by scroll  to the end of the text
             self.terminal.scroll_to_end()
