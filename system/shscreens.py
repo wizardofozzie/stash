@@ -483,6 +483,10 @@ class ShSequentialRenderer(object):
             self.screen.clean()
 
         if IN_PYTHONISTA:
+
+            # The following line is to fix a potential crash on iOS 8
+            self.terminal.selected_range = (0, 0)
+
             # Batch the changes
             self.terminal.tso.beginEditing()
 
